@@ -39,9 +39,5 @@ class Travel_Buddy_Ai_i18n {
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
-
-
-
 }

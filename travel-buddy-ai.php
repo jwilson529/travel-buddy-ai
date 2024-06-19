@@ -77,6 +77,5 @@ function run_travel_buddy_ai() {
 
 	$plugin = new Travel_Buddy_Ai();
 	$plugin->run();
-
 }
 run_travel_buddy_ai();

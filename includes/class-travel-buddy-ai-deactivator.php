@@ -30,7 +30,5 @@ class Travel_Buddy_Ai_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
 	}
-
 }
