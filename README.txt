@@ -46,6 +46,8 @@ Travel Buddy AI is a WordPress plugin that helps users search for rental propert
 - **Description**: The ID of the assistant to use for parsing rental preferences.
 - **Default**: `asst_lxwL4703F04vWwEpwgu2pKm3`
 
+**Note**: The provided default Assistant ID is configured to handle rental property queries. You can use this ID or set up your own assistant with similar configurations for personalized use.
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
@@ -60,4 +62,6 @@ Contributions are welcome! Please follow these steps to contribute:
 
 For inquiries, please contact [OneClickContent](mailto:info@oneclickcontent.com).
 
+---
 
+*This plugin was developed by [OneClickContent](https://oneclickcontent.com).*
