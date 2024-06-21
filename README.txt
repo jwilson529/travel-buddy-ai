@@ -41,7 +41,7 @@ Travel Buddy AI is a WordPress plugin that helps users search for rental propert
 3. **Configure the Plugin**
    - Go to `Settings > TravelBuddy AI`.
    - Enter your OpenAI API key.
-   - (Optional) Enter a custom Assistant ID, or use the default provided.
+   - Enter a custom Assistant ID, or use the demo, asst_lxwL4703F04vWwEpwgu2pKm3.
 
 ## Usage
 
