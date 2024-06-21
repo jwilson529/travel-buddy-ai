@@ -77,7 +77,7 @@ class Travel_Buddy_Ai_Public {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Error fetching assistant: ' . $response->get_error_message() );
+			// error_log( 'Error fetching assistant: ' . $response->get_error_message() );
 			return array( 'error' => 'Error fetching assistant' );
 		}
 
@@ -98,13 +98,13 @@ class Travel_Buddy_Ai_Public {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Error creating thread: ' . $response->get_error_message() );
+			// error_log( 'Error creating thread: ' . $response->get_error_message() );
 			return null;
 		}
 
 		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( ! isset( $response_body['id'] ) ) {
-			error_log( 'Failed to create thread, API Response: ' . print_r( $response_body, true ) );
+			// error_log( 'Failed to create thread, API Response: ' . print_r( $response_body, true ) );
 			return null;
 		}
 
@@ -135,7 +135,7 @@ class Travel_Buddy_Ai_Public {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Error adding message to thread: ' . $response->get_error_message() );
+			// error_log( 'Error adding message to thread: ' . $response->get_error_message() );
 			return 'Failed to add message';
 		}
 
@@ -158,7 +158,7 @@ class Travel_Buddy_Ai_Public {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Error running thread: ' . $response->get_error_message() );
+			// error_log( 'Error running thread: ' . $response->get_error_message() );
 			return 'Failed to run thread';
 		}
 
@@ -170,13 +170,13 @@ class Travel_Buddy_Ai_Public {
 		} elseif ( $decoded_response['status'] === 'completed' ) {
 			return $this->fetch_messages_from_thread( $api_key, $thread_id );
 		} else {
-			error_log( 'Run ended in non-completed status: ' . print_r( $decoded_response, true ) );
+			// error_log( 'Run ended in non-completed status: ' . print_r( $decoded_response, true ) );
 			return 'Run failed or was cancelled';
 		}
 	}
 
 	private function wait_for_run_completion( $api_key, $run_id, $thread_id ) {
-		error_log( "Starting wait_for_run_completion for run ID $run_id in thread $thread_id" );
+		// error_log( "Starting wait_for_run_completion for run ID $run_id in thread $thread_id" );
 		$status_check_url = "https://api.openai.com/v1/threads/{$thread_id}/runs/{$run_id}";
 
 		$attempts     = 0;
@@ -195,7 +195,7 @@ class Travel_Buddy_Ai_Public {
 			);
 
 			if ( is_wp_error( $response ) ) {
-				error_log( 'Error checking run status: ' . $response->get_error_message() );
+				// error_log( 'Error checking run status: ' . $response->get_error_message() );
 				return 'Failed to check run status';
 			}
 
@@ -203,26 +203,26 @@ class Travel_Buddy_Ai_Public {
 			$decoded_response = json_decode( $response_body, true );
 
 			if ( isset( $decoded_response['error'] ) ) {
-				error_log( 'Error in run status check: ' . $response_body );
+				// error_log( 'Error in run status check: ' . $response_body );
 				return 'Error retrieving run status: ' . $decoded_response['error']['message'];
 			}
 
 			if ( isset( $decoded_response['status'] ) && $decoded_response['status'] === 'completed' ) {
-				error_log( "Run $run_id in thread $thread_id has completed." );
+				// error_log( "Run $run_id in thread $thread_id has completed." );
 				return $this->fetch_messages_from_thread( $api_key, $thread_id );
 			} elseif ( isset( $decoded_response['status'] ) && ( $decoded_response['status'] === 'failed' || $decoded_response['status'] === 'cancelled' ) ) {
-				error_log( "Run $run_id in thread $thread_id failed or was cancelled." );
+				// error_log( "Run $run_id in thread $thread_id failed or was cancelled." );
 				return 'Run failed or was cancelled';
 			} elseif ( isset( $decoded_response['status'] ) && $decoded_response['status'] === 'requires_action' ) {
-				error_log( "Run $run_id in thread $thread_id requires action." );
+				// error_log( "Run $run_id in thread $thread_id requires action." );
 				return $this->handle_requires_action( $api_key, $run_id, $thread_id, $decoded_response['required_action'] );
 			}
 
 			++$attempts;
-			error_log( "Attempt $attempts: Run $run_id in thread $thread_id status is {$decoded_response['status']}." );
+			// error_log( "Attempt $attempts: Run $run_id in thread $thread_id status is {$decoded_response['status']}." );
 		}
 
-		error_log( "Run $run_id in thread $thread_id did not complete after $max_attempts attempts" );
+		// error_log( "Run $run_id in thread $thread_id did not complete after $max_attempts attempts" );
 		return 'Run did not complete in expected time';
 	}
 
@@ -311,11 +311,11 @@ class Travel_Buddy_Ai_Public {
 	        );
 
 	        if ( is_wp_error( $response ) ) {
-	            error_log( 'Error submitting tool outputs: ' . $response->get_error_message() );
+	            // error_log( 'Error submitting tool outputs: ' . $response->get_error_message() );
 	            return 'Failed to submit tool outputs';
 	        }
 
-	        error_log( 'Tool outputs submitted successfully, response: ' . wp_remote_retrieve_body( $response ) );
+	        // error_log( 'Tool outputs submitted successfully, response: ' . wp_remote_retrieve_body( $response ) );
 	        return $this->wait_for_run_completion( $api_key, $run_id, $thread_id );
 	    }
 
@@ -333,7 +333,7 @@ class Travel_Buddy_Ai_Public {
 	 */
 	private function fetch_messages_from_thread( $api_key, $thread_id ) {
 	    $messages_url = "https://api.openai.com/v1/threads/{$thread_id}/messages";
-	    error_log( "Attempting to fetch messages from thread: $thread_id" );
+	    // error_log( "Attempting to fetch messages from thread: $thread_id" );
 
 	    $response = wp_remote_get(
 	        $messages_url,
@@ -347,16 +347,16 @@ class Travel_Buddy_Ai_Public {
 	    );
 
 	    if ( is_wp_error( $response ) ) {
-	        error_log( 'Error fetching messages from thread: ' . $response->get_error_message() );
+	        // error_log( 'Error fetching messages from thread: ' . $response->get_error_message() );
 	        return 'Failed to fetch messages';
 	    }
 
 	    $response_body = wp_remote_retrieve_body( $response );
-	    error_log( 'Received response from fetching messages: ' . $response_body );
+	    // error_log( 'Received response from fetching messages: ' . $response_body );
 
 	    $decoded_response = json_decode( $response_body, true );
 	    if ( ! isset( $decoded_response['data'] ) ) {
-	        error_log( 'No messages found in thread: ' . print_r( $decoded_response, true ) );
+	        // error_log( 'No messages found in thread: ' . print_r( $decoded_response, true ) );
 	        return 'No messages found';
 	    }
 
@@ -372,14 +372,14 @@ class Travel_Buddy_Ai_Public {
 	        $decoded_response['data']
 	    );
 
-	    error_log( 'Processed messages: ' . print_r( $messages, true ) );
+	    // error_log( 'Processed messages: ' . print_r( $messages, true ) );
 	    return $messages[0];
 	}
 
 
 	public function travelbuddy_handle_ajax_request() {
 		check_ajax_referer( 'travelbuddy_nonce', 'nonce' );
-		error_log( 'Handling AJAX request' );
+		// error_log( 'Handling AJAX request' );
 
 		$query        = sanitize_text_field( $_POST['query'] );
 		$options      = get_option( 'travelbuddy_settings' );
@@ -392,7 +392,7 @@ class Travel_Buddy_Ai_Public {
 		}
 
 		$assistant = $this->fetch_assistant( $api_key, $assistant_id );
-		error_log( 'Fetched Assistant: ' . print_r( $assistant, true ) );
+		// error_log( 'Fetched Assistant: ' . print_r( $assistant, true ) );
 
 		if ( isset( $assistant['error'] ) ) {
 			wp_send_json_error( $assistant['error'] );
@@ -409,7 +409,7 @@ class Travel_Buddy_Ai_Public {
 			wp_send_json_error( 'Failed to create a thread' );
 			wp_die();
 		}
-		error_log( 'Created Thread ID: ' . $thread_id );
+		// error_log( 'Created Thread ID: ' . $thread_id );
 
 		$response = $this->add_message_and_run_thread( $api_key, $thread_id, $assistant_id, $query );
 		if ( is_string( $response ) ) {
