@@ -106,18 +106,22 @@ class Travel_Buddy_Ai_Admin {
 	}
 
 	public static function travelbuddy_api_key_render() {
-		$options = get_option( 'travelbuddy_settings' );
-		?>
-		<input type='text' name='travelbuddy_settings[travelbuddy_api_key]' value='<?php echo $options['travelbuddy_api_key']; ?>'>
-		<?php
+	    $options = get_option( 'travelbuddy_settings' );
+	    $api_key = isset( $options['travelbuddy_api_key'] ) ? esc_attr( $options['travelbuddy_api_key'] ) : '';
+	    ?>
+	    <input type='text' name='travelbuddy_settings[travelbuddy_api_key]' value='<?php echo $api_key; ?>'>
+	    <?php
 	}
 
 	public static function travelbuddy_assistant_id_render() {
-		$options = get_option( 'travelbuddy_settings' );
-		?>
-		<input type='text' name='travelbuddy_settings[travelbuddy_assistant_id]' value='<?php echo $options['travelbuddy_assistant_id']; ?>'>
-		<?php
+	    $options = get_option( 'travelbuddy_settings' );
+	    $assistant_id = isset( $options['travelbuddy_assistant_id'] ) ? esc_attr( $options['travelbuddy_assistant_id'] ) : '';
+	    ?>
+	    <input type='text' name='travelbuddy_settings[travelbuddy_assistant_id]' value='<?php echo $assistant_id; ?>'>
+	    <?php
 	}
+
+
 
 	public static function travelbuddy_settings_section_callback() {
 		echo __( 'Enter your OpenAI API key and Assistant ID to enable the TravelBuddy AI features.', 'travelbuddy' );

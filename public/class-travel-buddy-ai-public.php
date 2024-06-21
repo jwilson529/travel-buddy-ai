@@ -226,106 +226,156 @@ class Travel_Buddy_Ai_Public {
 		return 'Run did not complete in expected time';
 	}
 
+	/**
+	 * Handle required actions for the run.
+	 *
+	 * @since    1.0.0
+	 * @param    string $api_key          The OpenAI API key.
+	 * @param    string $run_id           The ID of the run.
+	 * @param    string $thread_id        The ID of the thread.
+	 * @param    array  $required_action  The required action details.
+	 * @return   mixed                       The run result or an error message.
+	 */
 	private function handle_requires_action( $api_key, $run_id, $thread_id, $required_action ) {
-		if ( $required_action['type'] === 'submit_tool_outputs' ) {
-			$tool_calls   = $required_action['submit_tool_outputs']['tool_calls'];
-			$tool_outputs = array();
+	    if ( $required_action['type'] === 'submit_tool_outputs' ) {
+	        $tool_calls   = $required_action['submit_tool_outputs']['tool_calls'];
+	        $tool_outputs = array();
 
-			foreach ( $tool_calls as $tool_call ) {
-				if ( $tool_call['type'] === 'function' ) {
-					$function_name = $tool_call['function']['name'];
-					$output        = null;
+	        foreach ( $tool_calls as $tool_call ) {
+	            $output = '';
+	            if ( $tool_call['type'] === 'function' ) {
+	                switch ( $tool_call['function']['name'] ) {
+	                    case 'parse_apartment_rental':
+	                        $output = json_encode( array(
+	                            'destination'   => 'San Francisco',
+	                            'duration'      => 3,
+	                            'start_date'    => '2023-07-01',
+	                            'price_per_month' => 3000,
+	                            'bedrooms'      => 2,
+	                            'bathrooms'     => 1,
+	                            'amenities'     => array( 'gym', 'Wi-Fi' ),
+	                            'pet_friendly'  => true,
+	                        ));
+	                        break;
 
-					switch ( $function_name ) {
-						case 'parse_apartment_rental':
-						case 'parse_storage_unit':
-						case 'parse_vacation_rental':
-							$output = json_encode( array( 'success' => 'true' ) );
-							break;
-						default:
-							// Handle other functions if necessary
-							$output = json_encode( array( 'error' => 'Unhandled function' ) );
-							break;
-					}
+	                    case 'parse_storage_unit':
+	                        $output = json_encode( array(
+	                            'destination' => 'San Francisco',
+	                            'duration'    => 3,
+	                            'start_date'  => '2023-07-01',
+	                            'price_per_month' => 150,
+	                            'size'        => '10x10',
+	                            'climate_controlled' => true,
+	                            'access_hours' => '24/7',
+	                            'security_features' => array( 'CCTV', 'Alarm' ),
+	                        ));
+	                        break;
 
-					if ( $output ) {
-						$tool_outputs[] = array(
-							'tool_call_id' => $tool_call['id'],
-							'output'       => $output,
-						);
-					}
-				}
-			}
+	                    case 'parse_vacation_rental':
+	                        $output = json_encode( array(
+	                            'destination'   => 'Miami Beach',
+	                            'duration'      => 14,
+	                            'start_date'    => '2024-12-01',
+	                            'property_type' => 'beachfront',
+	                            'bedrooms'      => 3,
+	                            'bathrooms'     => 2,
+	                            'amenities'     => array( 'swimming pool', 'Wi-Fi' ),
+	                            'price_per_night' => 500,
+	                            'pet_friendly'  => true,
+	                        ));
+	                        break;
 
-			$submit_tool_outputs_url = "https://api.openai.com/v1/threads/{$thread_id}/runs/{$run_id}/submit_tool_outputs";
-			$response                = wp_remote_post(
-				$submit_tool_outputs_url,
-				array(
-					'headers' => array(
-						'Authorization' => 'Bearer ' . $api_key,
-						'OpenAI-Beta'   => 'assistants=v2',
-						'Content-Type'  => 'application/json',
-					),
-					'body'    => json_encode( array( 'tool_outputs' => $tool_outputs ) ),
-				)
-			);
+	                    default:
+	                        $output = json_encode( array( 'success' => 'true' ) );
+	                        break;
+	                }
 
-			if ( is_wp_error( $response ) ) {
-				error_log( 'Error submitting tool outputs: ' . $response->get_error_message() );
-				return 'Failed to submit tool outputs';
-			}
+	                $tool_outputs[] = array(
+	                    'tool_call_id' => $tool_call['id'],
+	                    'output'       => $output,
+	                );
+	            }
+	        }
 
-			error_log( 'Tool outputs submitted successfully, response: ' . wp_remote_retrieve_body( $response ) );
-			return $this->wait_for_run_completion( $api_key, $run_id, $thread_id );
-		}
+	        $submit_tool_outputs_url = "https://api.openai.com/v1/threads/{$thread_id}/runs/{$run_id}/submit_tool_outputs";
+	        $response                = wp_remote_post(
+	            $submit_tool_outputs_url,
+	            array(
+	                'headers' => array(
+	                    'Authorization' => 'Bearer ' . $api_key,
+	                    'OpenAI-Beta'   => 'assistants=v2',
+	                    'Content-Type'  => 'application/json',
+	                ),
+	                'body'    => json_encode( array( 'tool_outputs' => $tool_outputs ) ),
+	            )
+	        );
 
-		return 'Unhandled requires_action';
+	        if ( is_wp_error( $response ) ) {
+	            error_log( 'Error submitting tool outputs: ' . $response->get_error_message() );
+	            return 'Failed to submit tool outputs';
+	        }
+
+	        error_log( 'Tool outputs submitted successfully, response: ' . wp_remote_retrieve_body( $response ) );
+	        return $this->wait_for_run_completion( $api_key, $run_id, $thread_id );
+	    }
+
+	    return 'Unhandled requires_action';
 	}
 
+
+	/**
+	 * Fetch messages from the thread.
+	 *
+	 * @since    1.0.0
+	 * @param    string $api_key     The OpenAI API key.
+	 * @param    string $thread_id   The ID of the thread.
+	 * @return   mixed                  The messages from the thread or an error message.
+	 */
 	private function fetch_messages_from_thread( $api_key, $thread_id ) {
-		$messages_url = "https://api.openai.com/v1/threads/{$thread_id}/messages";
-		error_log( "Attempting to fetch messages from thread: $thread_id" );
+	    $messages_url = "https://api.openai.com/v1/threads/{$thread_id}/messages";
+	    error_log( "Attempting to fetch messages from thread: $thread_id" );
 
-		$response = wp_remote_get(
-			$messages_url,
-			array(
-				'headers' => array(
-					'Authorization' => 'Bearer ' . $api_key,
-					'Content-Type'  => 'application/json',
-					'OpenAI-Beta'   => 'assistants=v2',
-				),
-			)
-		);
+	    $response = wp_remote_get(
+	        $messages_url,
+	        array(
+	            'headers' => array(
+	                'Authorization' => 'Bearer ' . $api_key,
+	                'Content-Type'  => 'application/json',
+	                'OpenAI-Beta'   => 'assistants=v2',
+	            ),
+	        )
+	    );
 
-		if ( is_wp_error( $response ) ) {
-			error_log( 'Error fetching messages from thread: ' . $response->get_error_message() );
-			return 'Failed to fetch messages';
-		}
+	    if ( is_wp_error( $response ) ) {
+	        error_log( 'Error fetching messages from thread: ' . $response->get_error_message() );
+	        return 'Failed to fetch messages';
+	    }
 
-		$response_body = wp_remote_retrieve_body( $response );
-		error_log( 'Received response from fetching messages: ' . $response_body );
+	    $response_body = wp_remote_retrieve_body( $response );
+	    error_log( 'Received response from fetching messages: ' . $response_body );
 
-		$decoded_response = json_decode( $response_body, true );
-		if ( ! isset( $decoded_response['data'] ) ) {
-			error_log( 'No messages found in thread: ' . print_r( $decoded_response, true ) );
-			return 'No messages found';
-		}
+	    $decoded_response = json_decode( $response_body, true );
+	    if ( ! isset( $decoded_response['data'] ) ) {
+	        error_log( 'No messages found in thread: ' . print_r( $decoded_response, true ) );
+	        return 'No messages found';
+	    }
 
-		$messages = array_map(
-			function ( $message ) {
-				foreach ( $message['content'] as $content ) {
-					if ( $content['type'] === 'text' ) {
-						return json_decode( $content['text']['value'], true );
-					}
-				}
-				return 'No text content';
-			},
-			$decoded_response['data']
-		);
+	    $messages = array_map(
+	        function ( $message ) {
+	            foreach ( $message['content'] as $content ) {
+	                if ( $content['type'] === 'text' ) {
+	                    return json_decode( $content['text']['value'], true );
+	                }
+	            }
+	            return 'No text content';
+	        },
+	        $decoded_response['data']
+	    );
 
-		error_log( 'Processed messages: ' . print_r( $messages, true ) );
-		return $messages[0];
+	    error_log( 'Processed messages: ' . print_r( $messages, true ) );
+	    return $messages[0];
 	}
+
 
 	public function travelbuddy_handle_ajax_request() {
 		check_ajax_referer( 'travelbuddy_nonce', 'nonce' );
