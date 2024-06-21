@@ -1,5 +1,24 @@
 # Travel Buddy AI
 
+This plugin was made as a proof of concept based on a Reddit post asking for natural language to JSON. The example given was something like:
+
+Input:
+"Looking for a storage unit in Seattle for 3 months starting in November. It should be 5x5 in size, have good security features, and be accessible during evenings. My budget is $100 per month."
+
+Output (JSON):
+{
+  "destination": "Seattle",
+  "duration": 3,
+  "start_date": "2024-11-01",
+  "price_per_month": 100,
+  "size": "5x5",
+  "access_hours": "Evenings",
+  "security_features": [
+    "good security"
+  ]
+}
+
+
 Travel Buddy AI is a WordPress plugin that helps users search for rental properties by leveraging OpenAI's API. Users can input their rental preferences, and the plugin will return structured JSON data based on the input.
 
 ## Features
