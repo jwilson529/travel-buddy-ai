@@ -30,7 +30,7 @@ Travel Buddy AI is a WordPress plugin that helps users search for rental propert
 ## Installation
 
 1. **Download the Plugin**
-   - Download the latest version of the plugin from the [releases page](https://github.com/yourusername/travel-buddy-ai/releases).
+   - Download the latest version of the plugin from the [releases page](https://github.com/jwilson529/travel-buddy-ai/releases).
 
 2. **Install via WordPress Admin**
    - Go to your WordPress admin dashboard.
