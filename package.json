@@ -1,0 +1,21 @@
+{
+  "name": "travel-buddy-ai",
+  "version": "1.0.0",
+  "description": "=== Plugin Name === Contributors: (this should be a list of wordpress.org userid's) Donate link: https://oneclickcontent.com/ Tags: comments, spam Requires at least: 3.0.1 Tested up to: 3.4 Stable tag: 4.3 License: GPLv2 or later License URI: http://www.gnu.org/licenses/gpl-2.0.html",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fix": "phpcbf -d error_reporting=\"E_ALL&~E_DEPRECATED\" --ignore=*/vendor/*,*/node_modules/*  --standard=WordPress --extensions=php .",
+    "check": "phpcs -d error_reporting=\"E_ALL&~E_DEPRECATED\" --ignore=*/vendor/*,*/node_modules/*  --standard=WordPress --extensions=php . > check.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwilson529/travel-buddy-ai.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwilson529/travel-buddy-ai/issues"
+  },
+  "homepage": "https://github.com/jwilson529/travel-buddy-ai#readme"
+}
