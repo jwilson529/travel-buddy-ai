@@ -153,6 +153,8 @@ class Travel_Buddy_Ai {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'travelbuddy_add_admin_menu' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'travelbuddy_settings_init' );
 	}
 
 	/**
@@ -168,6 +170,9 @@ class Travel_Buddy_Ai {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
+		$this->loader->add_action( 'wp_ajax_travelbuddy_search', $plugin_public, 'travelbuddy_handle_ajax_request' );
+		$this->loader->add_action( 'wp_ajax_nopriv_travelbuddy_search', $plugin_public, 'travelbuddy_handle_ajax_request' );
 	}
 
 	/**
