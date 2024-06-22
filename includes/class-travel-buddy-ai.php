@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -86,7 +85,7 @@ class Travel_Buddy_Ai {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Travel_Buddy_Ai_Loader. Orchestrates the hooks of the plugin.
-	 * - Travel_Buddy_Ai_i18n. Defines internationalization functionality.
+	 * - Travel_Buddy_Ai_I18n. Defines internationalization functionality.
 	 * - Travel_Buddy_Ai_Admin. Defines all hooks for the admin area.
 	 * - Travel_Buddy_Ai_Public. Defines all hooks for the public side of the site.
 	 *
@@ -127,7 +126,7 @@ class Travel_Buddy_Ai {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Travel_Buddy_Ai_i18n class in order to set the domain and to register the hook
+	 * Uses the Travel_Buddy_Ai_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -135,7 +134,7 @@ class Travel_Buddy_Ai {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Travel_Buddy_Ai_i18n();
+		$plugin_i18n = new Travel_Buddy_Ai_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}

@@ -2,5 +2,5 @@
 /**
  * Silence is golden.
  *
- * @package    Cstn_Quicklinks
+ * @package    Travel_Buddy_Ai
  */

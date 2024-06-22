@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -24,7 +23,7 @@
  * @subpackage Travel_Buddy_Ai/includes
  * @author     OneClickContent <info@oneclickcontent.com>
  */
-class Travel_Buddy_Ai_i18n {
+class Travel_Buddy_Ai_I18n {
 
 
 	/**

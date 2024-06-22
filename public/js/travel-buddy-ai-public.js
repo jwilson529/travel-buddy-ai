@@ -46,6 +46,14 @@
                 }
             });
         });
+
+        // Trigger form submit on Enter key press
+        $('#travelbuddy-query').on('keypress', function(e) {
+            if (e.which === 13) {
+                $('#travelbuddy-search-form').submit();
+                return false;
+            }
+        });
     });
 
 })( jQuery );
